@@ -24,7 +24,7 @@ sudo ./install.sh
 Press N when prompted to move examples to a convenient place
 
 ### Clone this packup
-`git clone https://github.com/AstraAppivate/riat-trilobot.git`
+`git clone https://github.com/BobRoss5027/Trilobot_Demonstration.git`
 
 ### Connect using VSCode Remote SSH
 - Install VSCode Remote SSH extension
