@@ -6,12 +6,12 @@ A robot learning platrofrm using a Raspberry Pi 4B+ for STEM outreach
 
 You must enable:
 
-• i2c: `sudo raspi-config` -> Interface Options -> I2C -> Enable
+- i2c: `sudo raspi-config` -> Interface Options -> I2C -> Enable
 
 You must install:
 
-• git: `sudo apt install git`
-• trilobot, sshkeyboard, smb3: `pip install trilobot sshkeyboard`
+- git: `sudo apt install git`
+- trilobot, sshkeyboard, smbus: `pip install trilobot sshkeyboard smbus`
 
 # Setup
 
