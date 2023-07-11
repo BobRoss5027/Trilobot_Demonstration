@@ -1,4 +1,4 @@
-# RIAT 2023 Trilobot Packup
+# Trilobot STEM Packup
 
 A robot learning platrofrm using a Raspberry Pi 4B+ for STEM outreach
 
