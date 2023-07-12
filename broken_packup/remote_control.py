@@ -3,53 +3,65 @@ from trilobot import *
 import logging
 from sshkeyboard import listen_keyboard
 from distance_stop import wall
+from enum import Enum
 
-"""
-Simple program to control a Trilobot using an SSH connection.
-
-Control the Trilobot by using W,A,S,D to move and turn, and press space to stop
-
-Press ESC to end the program
-"""
-
-# Defines a Trilobot Object to control the motor attachments
 tbot = Trilobot()
 
-# Define logging format and level
-# To show logs, change `level=logging.INFO` -> `level=logging.DEBUG`
 format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=format, level=logging.INFO,datefmt="%H:%M:%S")
-          
-GLOBAL_SPEED = 0.8 # Speed to drive at, between 0.0 and 1.0
-GLOBAL_TURN = 0.5 # Time to turn for, in seconds
-   
-def control(key):    
-    logging.debug("%s pressed", key)
-    tbot.clear_underlighting()
-    if key == "w":  # Move forwards when w pressed
-        tbot.set_underlights(LIGHTS_FRONT, r_color=[0,255,0])
-        tbot.forward(GLOBAL_SPEED)
-    elif key == "s":    # Move backwards when s pressed
-        tbot.set_underlights(LIGHTS_REAR, r_color=[0,255,0])
-        tbot.backward(GLOBAL_SPEED)
-    elif key == "a":    # Turn left when a pressed
-        tbot.set_underlights(LIGHTS_LEFT, r_color=[0,255,0])
-        tbot.turn_left(GLOBAL_SPEED)
-        time.sleep(GLOBAL_TURN)
-        tbot.stop()
+logging.basicConfig(format=format, level=logging.DEBUG,datefmt="%H:%M:%S")
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+            
+GLOBAL_SPEED = 0.8
+TURN_DURATION = 0.25
+
+class RobotState(Enum):
+    STOP = 0
+    FORWARD = 1
+    LEFT = 2
+    RIGHT = 3
+    BACKWARD = 4
+    DANCE = 5
+
+ROBOTSTATE = RobotState.STOP
+
+class RobotController:
+    def __init__(self):
+        self.ROBOTSTATE = RobotState.STOP
+    def control(self,key): 
+        logging.debug("%s pressed", key)
         tbot.clear_underlighting()
-        tbot.fill_underlighting(r_color=[0,0,255])
-    elif key == "d":    # Turn right when d pressed
-        tbot.set_underlights(LIGHTS_RIGHT, r_color=[0,255,0])
-        tbot.turn_right(GLOBAL_SPEED)
-        time.sleep(GLOBAL_TURN)
-        tbot.stop()
-        tbot.clear_underlighting()
-        tbot.fill_underlighting(r_color=[0,0,255])
-    else:   # Stop when any other key pressed 
-        tbot.stop()
-        tbot.fill_underlighting(r_color=[255,0,0])
+        if key == "w":
+            if self.ROBOTSTATE == RobotState.BACKWARD:
+                tbot.stop()
+                self.ROBOTSTATE = RobotState.STOP
+            else:
+                tbot.forward(GLOBAL_SPEED)
+                self.ROBOTSTATE = RobotState.FORWARD
+            tbot.set_underlights(LIGHTS_FRONT, r_color=GREEN)     
+        elif key == "s":
+            #Program the robot so it moves backward when s is pressed
+            #If the robot is currently moving forward then stop the robot
+            tbot.backward(GLOBAL_SPEED)
+            self.ROBOTSTATE = RobotState.BACKWARD
+            tbot.set_underlights(LIGHTS_REAR, r_color=GREEN)
+        elif key == "a":
+            #Program the robot to turn left when the a key is pressed
+            #If the robot is currently turning right then stop the robot
+            tbot.turn_left(GLOBAL_SPEED)
+        elif key == "d":
+            #Program the robot to turn right when the d key is pressed
+            #If the robot is currently turning left then stop the robot
+            tbot.set_underlights(LIGHTS_RIGHT, r_color=GREEN)
+        elif key == "q":
+            #If the q key is pressed make the robot dance!!
+            tbot.set_underlights(LIGHTS_FRONT, r_color=RED)
+        else:
+            tbot.stop()
+            tbot.fill_underlighting(r_color=RED)
             
 if __name__ == "__main__":
-    print("Control this robot using w,a,s,d for movement and space to stop. Press ESC to stop this program.")
-    listen_keyboard(on_press=control, sequential=True)  # Listens for key pressed in SSH sessions
+    controller = RobotController()
+    print("Control this robot using w,a,s,d for movement and space to stop")
+    listen_keyboard(on_press=controller.control, sequential=True)
