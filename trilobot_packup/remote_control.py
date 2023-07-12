@@ -28,14 +28,14 @@ def control(key):
         time.sleep(GLOBAL_TURN)
         tbot.stop()
         tbot.clear_underlighting()
-        tbot.set_underlights(LIGHTS_FRONT, r_color=[0,255,0])
+        tbot.fill_underlighting(r_color=[0,0,255])
     elif key == "d":
         tbot.set_underlights(LIGHTS_RIGHT, r_color=[0,255,0])
         tbot.turn_right(GLOBAL_SPEED)
         time.sleep(GLOBAL_TURN)
         tbot.stop()
         tbot.clear_underlighting()
-        tbot.set_underlights(LIGHTS_FRONT, r_color=[0,255,0])
+        tbot.fill_underlighting(r_color=[0,0,255])
     else:
         tbot.stop()
         show=True
