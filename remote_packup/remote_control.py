@@ -2,7 +2,6 @@ import time
 from trilobot import *
 import logging
 from sshkeyboard import listen_keyboard
-from distance_stop import wall
 
 """
 Simple program to control a Trilobot using an SSH connection.
